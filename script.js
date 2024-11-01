@@ -1,8 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // Mengambil nilai current page 
     let currentPage = localStorage.getItem('currentPage') || 1;
     let itemsPerPage = localStorage.getItem('itemsPerPage') || 10;
     let sort = localStorage.getItem('sort') || "-published_at";
 
+    // Elemen DOM untuk konten dan kontrol
     const postsContainer = document.getElementById("postsContainer");
     const paginationContainer = document.getElementById("paginationContainer");
     const itemsPerPageSelect = document.getElementById("show-per-page");
@@ -11,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let lastScrollTop = 0;
     const header = document.querySelector('.header');
 
+    // See or Hide Header
     window.addEventListener('scroll', () => {
         const header = document.querySelector('.header');
         const st = window.pageYOffset || document.documentElement.scrollTop;
@@ -26,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     itemsPerPageSelect.value = itemsPerPage;
     sortSelect.value = sort;
 
+    // Mengambil data artikel dari API
     function fetchData() {
         const apiUrl = `https://suitmedia-backend.suitdev.com/api/ideas?page[number]=${currentPage}&page[size]=${itemsPerPage}&append[]=small_image&append[]=medium_image&sort=${sort}`;
         
@@ -38,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
 
+    // Render kartu dari data API
     function renderPosts(posts) {
         postsContainer.innerHTML = posts.map(post => `
             <div class="card">
@@ -50,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
         `).join("");
     }
 
+    // Render pagination berdasar metadata dari API
     function renderPagination(meta) {
         paginationContainer.innerHTML = "";
         for (let i = 1; i <= meta.total_pages; i++) {
@@ -65,12 +71,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Mengubah jml artikel per halaman
     itemsPerPageSelect.addEventListener("change", (event) => {
         itemsPerPage = event.target.value;
         localStorage.setItem('itemsPerPage', itemsPerPage);
         fetchData();
     });
 
+    // Mengubah urutan artikel
     sortSelect.addEventListener("change", (event) => {
         sort = event.target.value;
         localStorage.setItem('sort', sort);
